@@ -14,6 +14,6 @@ export class User {
   @Column({ nullable: true })
   phoneNumber: string;
 
-  @Column()
+  @Column({ nullable: true })
   imageUrl: string;
 }
