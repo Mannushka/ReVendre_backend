@@ -16,16 +16,17 @@
     "@types/express": "^5.0.3",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
+    "express-validator": "^7.2.1",
     "mysql2": "^3.14.0",
+    "pg": "^8.14.1",
     "reflect-metadata": "^0.2.2",
     "typeorm": "0.3.25",
-    "typescript": "^5.8.3",
-    "pg": "^8.14.1"
+    "typescript": "^5.8.3"
   },
   "devDependencies": {
     "@types/node": "^24.1.0",
+    "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.2",
-    "nodemon": "^3.1.10"
+    "typescript": "^5.8.2"
   }
 }
