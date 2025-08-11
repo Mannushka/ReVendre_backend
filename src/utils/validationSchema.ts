@@ -1,3 +1,4 @@
+import { param } from "express-validator";
 export const createUserValidationSchema = {
   email: {
     notEmpty: {
@@ -53,3 +54,12 @@ export const createUserValidationSchema = {
     },
   },
 };
+
+export const getOneByIdValidationSchema = [
+  param("id")
+    .notEmpty()
+    .withMessage("ID is required")
+    .isUUID()
+    .withMessage("ID must be a valid UUID")
+    .trim(),
+];
