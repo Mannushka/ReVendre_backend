@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { Repository, FindManyOptions, FindOptionsWhere } from "typeorm";
 import { AppDataSource } from "../data-source";
 import { QueryFailedError } from "typeorm";
-import { validate as isUUID } from "uuid";
+import { validationResult } from "express-validator";
 
 export abstract class BaseController<Entity> {
   protected repository: Repository<Entity>;
@@ -34,12 +34,10 @@ export abstract class BaseController<Entity> {
 
   async getOne(request: Request, response: Response) {
     const id = request.params.id;
-    if (!id || typeof id !== "string" || !isUUID(id)) {
-      return response
-        .status(400)
-        .json({ message: "Id is missing or invalid :(" });
+    const errors = validationResult(request);
+    if (!errors.isEmpty()) {
+      return response.status(400).json({ errors: errors.array() });
     }
-
     try {
       const item = await this.repository.findOneBy({ id: id } as any);
       if (!item) {
