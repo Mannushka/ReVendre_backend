@@ -5,6 +5,7 @@ import { User } from "../entity/User";
 import { QueryFailedError } from "typeorm";
 import { checkSchema, matchedData, validationResult } from "express-validator";
 import { createUserValidationSchema } from "../utils/validationSchema";
+import { clerkMiddleware, getAuth } from "@clerk/express";
 
 export class UserController extends BaseController<User> {
   // private userRepository = AppDataSource.getRepository(User);
@@ -19,17 +20,16 @@ export class UserController extends BaseController<User> {
         errors: errors.array(),
       });
     }
+    const { userId } = getAuth(request);
 
+    if (!userId) {
+      return response.status(401).json({ error: "Unauthorized" });
+    }
     const { userName, email, phoneNumber, imageUrl } = request.body;
 
     try {
-      // if (!userName || !email) {
-      //   return response
-      //     .status(400)
-      //     .json({ message: "User name and email are required" });
-      // }
-
       const user = this.repository.create({
+        clerkId: userId,
         userName,
         email,
         phoneNumber: phoneNumber || null,
