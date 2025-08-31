@@ -20,5 +20,9 @@ router.post(
   checkSchema(createUserValidationSchema),
   userController.createUser.bind(userController)
 );
+router.delete(
+  "/rollback-user/:clerkUserId",
+  userController.deleteClerkUser.bind(userController)
+);
 
 export default router;
