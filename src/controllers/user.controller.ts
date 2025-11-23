@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { BaseController } from "./base.controller";
-import { User } from "../entity/User";
+import { User } from "../db/entities/User";
 import { validationResult } from "express-validator";
 import { getAuth, clerkClient } from "@clerk/express";
 
@@ -20,8 +20,10 @@ export class UserController extends BaseController<User> {
     const { userId } = getAuth(request);
 
     if (!userId) {
-      response.status(401).json({ error: "Unauthorized" });
+      return response.status(401).json({ error: "Unauthorized" });
     }
+
+    console.log("Creating user with ID:", userId);
     const { userName, email, phoneNumber, imageUrl } = request.body;
 
     try {
@@ -59,6 +61,7 @@ export class UserController extends BaseController<User> {
       }
       const deletedUser = await clerkClient.users.deleteUser(clerkUserId);
       console.log("Successfully deleted Clerk user:", deletedUser.id);
+
       response.status(200).json({ message: "Clerk user deleted successfully" });
     } catch (error) {
       console.error("Error deleting Clerk user:", error);
