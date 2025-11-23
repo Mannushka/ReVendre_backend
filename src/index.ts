@@ -1,7 +1,7 @@
 import app from "./app";
 import "reflect-metadata";
 import { AppDataSource } from "./data-source";
-import { User } from "./entity/User";
+import { User } from "./db/entities/User";
 // import * as dotenv from "dotenv";
 // dotenv.config(); // Loads .env into process.env
 require("dotenv").config();
