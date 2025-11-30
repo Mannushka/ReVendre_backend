@@ -15,6 +15,7 @@ export class ListingController extends BaseController<Listing> {
     }
 
     const { title, description, price, userId } = request.body;
+    const isActive = true;
 
     try {
       const listing = this.repository.create({
@@ -22,6 +23,7 @@ export class ListingController extends BaseController<Listing> {
         description,
         price,
         userId,
+        isActive,
       });
 
       const savedListing = await this.repository.save(listing);
