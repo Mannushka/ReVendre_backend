@@ -28,4 +28,27 @@ export class ListingPhotoController extends BaseController<ListingPhoto> {
       response.status(500).json({ error: "Failed to create listing photo" });
     }
   }
+  async deleteListingPhoto(request: Request, response: Response) {
+    const id = request.params.id;
+
+    try {
+      const listingPhoto = await this.repository.findOneBy({ id: id } as any);
+      if (!listingPhoto) {
+        return response
+          .status(404)
+          .json({ message: "Listing photo not found :(" });
+      }
+
+      await this.repository.remove(listingPhoto);
+      return response
+        .status(200)
+        .json({ message: "Listing photo deleted successfully" });
+    } catch (error) {
+      console.error("deleteListingPhoto failed:", error);
+
+      return response.status(500).json({
+        message: "Internal server error",
+      });
+    }
+  }
 }
