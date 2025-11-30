@@ -1,6 +1,7 @@
 import express from "express";
 import "reflect-metadata";
 import userRoutes from "./routes/user.routes";
+import listingRoutes from "./routes/listing.routes";
 import { clerkMiddleware } from "@clerk/express";
 
 const app = express();
@@ -11,5 +12,6 @@ app.use(express.json());
 app.use(clerkMiddleware());
 app.use("/users", userRoutes);
 // server.use("/users", userRoutes); //later add routes here
+app.use("/listings", listingRoutes);
 
 export default app;
