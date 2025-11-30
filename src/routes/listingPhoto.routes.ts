@@ -13,5 +13,9 @@ router.post(
   checkSchema(createListingPhotoValidationSchema),
   listingPhotoController.createListingPhoto.bind(listingPhotoController)
 );
+router.delete(
+  "/:id",
+  listingPhotoController.deleteListingPhoto.bind(listingPhotoController)
+);
 
 export default router;
