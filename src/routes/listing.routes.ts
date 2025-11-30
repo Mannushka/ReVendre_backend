@@ -12,5 +12,6 @@ router.post(
   checkSchema(createListingValidationSchema),
   listingController.createListing.bind(listingController)
 );
+router.delete("/:id", listingController.deleteListing.bind(listingController));
 
 export default router;
