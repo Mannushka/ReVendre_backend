@@ -63,3 +63,60 @@ export const getOneByIdValidationSchema = [
     .withMessage("ID must be a valid UUID")
     .trim(),
 ];
+
+export const createListingValidationSchema = {
+  title: {
+    notEmpty: {
+      errorMessage: "Title cannot be empty.",
+    },
+    isString: {
+      errorMessage: "Title must be a string.",
+    },
+    isLength: {
+      options: {
+        min: 5,
+        max: 100,
+      },
+      errorMessage: "Title must be between 5 and 100 characters.",
+    },
+    trim: true,
+    escape: true,
+  },
+
+  description: {
+    notEmpty: {
+      errorMessage: "Description cannot be empty.",
+    },
+    isString: {
+      errorMessage: "Description must be a string.",
+    },
+    isLength: {
+      options: {
+        min: 10,
+        max: 1000,
+      },
+      errorMessage: "Description must be between 10 and 1000 characters.",
+    },
+    trim: true,
+    escape: true,
+  },
+
+  price: {
+    notEmpty: {
+      errorMessage: "Price cannot be empty.",
+    },
+    isFloat: {
+      options: { min: 0.01 },
+      errorMessage: "Price must be a positive number.",
+    },
+  },
+
+  userId: {
+    notEmpty: {
+      errorMessage: "User ID cannot be empty.",
+    },
+    isUUID: {
+      errorMessage: "User ID must be a valid UUID.",
+    },
+  },
+};
