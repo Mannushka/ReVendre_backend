@@ -120,3 +120,26 @@ export const createListingValidationSchema = {
     },
   },
 };
+
+export const createListingPhotoValidationSchema = {
+  listingId: {
+    notEmpty: {
+      errorMessage: "Listing ID cannot be empty.",
+    },
+    isUUID: {
+      errorMessage: "Listing ID must be a valid UUID.",
+    },
+  },
+
+  imgUrl: {
+    notEmpty: {
+      errorMessage: "Photo URL cannot be empty.",
+    },
+    isString: {
+      errorMessage: "Photo URL must be a string.",
+    },
+    isURL: {
+      errorMessage: "Invalid URL format.",
+    },
+  },
+};
