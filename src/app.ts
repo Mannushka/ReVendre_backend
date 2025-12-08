@@ -3,6 +3,7 @@ import "reflect-metadata";
 import userRoutes from "./routes/user.routes";
 import listingRoutes from "./routes/listing.routes";
 import listingPhotoRoutes from "./routes/listingPhoto.routes";
+import categoryRoutes from "./routes/category.routes";
 import { clerkMiddleware } from "@clerk/express";
 
 const app = express();
@@ -15,5 +16,6 @@ app.use("/users", userRoutes);
 // server.use("/users", userRoutes); //later add routes here
 app.use("/listings", listingRoutes);
 app.use("/listing-photos", listingPhotoRoutes);
+app.use("/categories", categoryRoutes);
 
 export default app;
