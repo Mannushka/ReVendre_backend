@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import { BaseController } from "./base.controller";
 import { Listing } from "../db/entities/Listing";
+import { AppDataSource } from "../data-source";
+import { getAuth } from "@clerk/express";
+import { User } from "../db/entities/User";
 import { validationResult } from "express-validator";
 import { QueryFailedError } from "typeorm";
 
@@ -15,16 +18,31 @@ export class ListingController extends BaseController<Listing> {
       return response.status(400).json({ errors: errors.array() });
     }
 
-    const { title, description, price, userId } = request.body;
-    const isActive = true;
+    const { userId, isAuthenticated } = getAuth(request); //retrieve clerk user id
+    console.log("Clerk User ID:", userId);
+    console.log("isAuthenticated:", isAuthenticated);
+
+    //handle errors if user is not found
+    if (!userId) {
+      return response.status(401).json({ error: "Unauthorized" });
+    }
+    const userRepository = AppDataSource.getRepository(User);
+    const user = await userRepository.findOneBy({ clerkId: userId });
+    if (!user) {
+      return response.status(404).json({ error: "User not found" });
+    }
+
+    const { title, description, price, categoryId } = request.body;
+    console.log("data received in body:", request.body);
 
     try {
       const listing = this.repository.create({
         title,
         description,
         price,
-        userId,
-        isActive,
+        categoryId: categoryId,
+        isActive: true,
+        userId: user.id,
       });
 
       const savedListing = await this.repository.save(listing);
