@@ -82,6 +82,15 @@ export const createListingValidationSchema = {
     trim: true,
     escape: true,
   },
+  price: {
+    notEmpty: {
+      errorMessage: "Price cannot be empty.",
+    },
+    isFloat: {
+      options: { min: 0.01 },
+      errorMessage: "Price must be a positive number.",
+    },
+  },
 
   description: {
     notEmpty: {
@@ -101,22 +110,12 @@ export const createListingValidationSchema = {
     escape: true,
   },
 
-  price: {
+  categoryId: {
     notEmpty: {
-      errorMessage: "Price cannot be empty.",
-    },
-    isFloat: {
-      options: { min: 0.01 },
-      errorMessage: "Price must be a positive number.",
-    },
-  },
-
-  userId: {
-    notEmpty: {
-      errorMessage: "User ID cannot be empty.",
+      errorMessage: "Category ID cannot be empty.",
     },
     isUUID: {
-      errorMessage: "User ID must be a valid UUID.",
+      errorMessage: "Category ID must be a valid UUID.",
     },
   },
 };
