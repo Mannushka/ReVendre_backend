@@ -11,6 +11,7 @@ import {
 } from "typeorm";
 import { User } from "./User";
 import { ListingPhoto } from "./ListingPhoto";
+import { Category } from "./Category";
 
 @Entity()
 export class Listing {
@@ -28,10 +29,15 @@ export class Listing {
 
   @Index()
   @Column({ type: "char", length: 36 })
+  categoryId!: string;
+
+  @Index()
+  @Column({ type: "char", length: 36 })
   userId!: string;
 
   @Column({ type: "boolean", default: true })
   isActive!: boolean;
+
   @CreateDateColumn()
   createdAt!: Date;
 
@@ -41,6 +47,12 @@ export class Listing {
   @ManyToOne(() => User, (user) => user.listings, { onDelete: "CASCADE" })
   @JoinColumn({ name: "userId" })
   user!: User;
+
+  @ManyToOne(() => Category, (category) => category.listings, {
+    onDelete: "SET NULL",
+  })
+  @JoinColumn({ name: "categoryId" })
+  categoryEntity!: Category;
 
   @OneToMany(() => ListingPhoto, (photo) => photo.listing, { cascade: false })
   photos!: ListingPhoto[];
