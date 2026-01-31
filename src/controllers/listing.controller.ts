@@ -6,6 +6,7 @@ import { getAuth } from "@clerk/express";
 import { User } from "../db/entities/User";
 import { validationResult } from "express-validator";
 import { QueryFailedError } from "typeorm";
+import { ListingPhoto } from "../db/entities/ListingPhoto";
 
 export class ListingController extends BaseController<Listing> {
   constructor() {
@@ -32,25 +33,73 @@ export class ListingController extends BaseController<Listing> {
       return response.status(404).json({ error: "User not found" });
     }
 
-    const { title, description, price, categoryId } = request.body;
+    const { title, description, price, categoryId, imageUrls } = request.body;
     console.log("data received in body:", request.body);
-
+    let listingId: string;
     try {
-      const listing = this.repository.create({
-        title,
-        description,
-        price,
-        categoryId: categoryId,
-        isActive: true,
-        userId: user.id,
-      });
+      const result = await AppDataSource.transaction(
+        async (transactionalEntityManager) => {
+          const listing = transactionalEntityManager.create(Listing, {
+            title,
+            description,
+            price,
+            categoryId: categoryId,
+            isActive: true,
+            userId: user.id,
+          });
+          console.log("Created listing entity:", listing);
+          const savedListing = await transactionalEntityManager.save(
+            Listing,
+            listing,
+          );
+          listingId = savedListing.id;
+          console.log("Listing saved with ID:", listingId);
+          console.log(
+            "image urls are correct:",
+            imageUrls && Array.isArray(imageUrls),
+          );
 
-      const savedListing = await this.repository.save(listing);
-      response.status(201).json(savedListing);
+          if (imageUrls && Array.isArray(imageUrls)) {
+            const listingPhotoRepository =
+              transactionalEntityManager.getRepository(ListingPhoto);
+            for (const url of imageUrls) {
+              const photo = listingPhotoRepository.create({
+                imgUrl: url,
+                listingId: listingId,
+              });
+              console.log("Saving photo with URL:", url);
+              await listingPhotoRepository.save(photo);
+            }
+            console.log("All photos saved for listing ID:", listingId);
+          }
+
+          return savedListing;
+        },
+      );
+
+      return response.status(201).json(result);
     } catch (error) {
-      console.error("DB insert failed:", error);
-      response.status(500).json({ error: "Failed to create listing" });
+      console.error("Transaction failed:", error);
+      return response.status(500).json({ error: "Failed to create listing" });
     }
+    //   const listing = this.repository.create({
+    //     title,
+    //     description,
+    //     price,
+    //     categoryId: categoryId,
+    //     isActive: true,
+    //     userId: user.id,
+    //   });
+
+    //   const savedListing = await this.repository.save(listing);
+    //   listingId = savedListing.id;
+    //   response.status(201).json(savedListing);
+    // } catch (error) {
+    //   console.error("DB insert failed:", error);
+    //   response.status(500).json({ error: "Failed to create listing" });
+    // }
+
+    // return response.status(201).json(savedListing);
   }
   async deleteListing(request: Request, response: Response) {
     const id = request.params.id;
